@@ -1,0 +1,24 @@
+# General
+*.tmp
+*.bak
+*.swp
+*~
+*.log
+.idea/
+.vscode/
+
+# LaTeX
+*.aux
+*.bbl
+*.blg
+*.lof
+*.lot
+*.out
+*.toc
+*.synctex.gz
+
+# macOS
+.DS_Store
+
+# Windows
+thumbs.db
