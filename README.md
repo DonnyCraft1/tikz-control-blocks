@@ -11,6 +11,8 @@ This library provides custom TikZ shapes and styles for creating control system 
 * **Basic Styling:**  Basic customization options are available for size, line thickness, and font.
 * **Positioning:** Compatible with the `positioning` library for node placement.
 
+<img src="examples/figures/showcase-control-shapes.png" alt="Showcase Control Shapes" width="300">
+
 ## Installation
 
 1. **Download:** Download the `tikzcontrolshapes.tex` and `tikzcontrolstyles.tex` files.

@@ -1,0 +1,47 @@
+\documentclass[tikz,border=5]{standalone}
+\usetikzlibrary{arrows.meta, positioning}
+
+\input{TikZ-custom-shapes/tikzcontrolshapes}
+\input{TikZ-custom-shapes/tikzcontrolstyles}
+
+\begin{document}
+\begin{tikzpicture}[node distance=1.2cm]
+    \node[mult] (m1) {$K$};
+    \node[mult, right=of m1] (m2) {$\times$};
+    \node[mult, right=of m2] (m3) {3,600};
+
+    \node[sum, below=of m1, sum signs={west=+, south=-}] (s1) {};
+    \node[sum, below=of m2, sum signs={west=+, south=-}] (s2) {};
+    \node[sum, below=of m3, sum signs={west=+, south=+, east=-}] (s3) {};
+    
+    \node[int, below=of s1] (i1) {};
+    \node[int, integrator reversed=true, below=of s2] (i2) {};
+    \node[int, below=of s3] (i3) {};
+
+    \foreach \n in {m1, m2, m3} {
+        \draw[<-] (\n.west) -- ++(-0.5,0);
+        \draw[->] (\n.east) -- ++(0.5,0);
+    }
+
+    \draw[<-] (s1.west) -- ++(-0.5,0);
+    \draw[<-] (s1.south) -- ++(0,-0.5);
+    \draw[->] (s1.east) -- ++(0.5,0);
+
+    \draw[<-] (s2.west) -- ++(-0.5,0);
+    \draw[<-] (s2.south west) -- ++(-0.4,-0.4);
+    \draw[->] (s2.east) -- ++(0.5,0);
+
+    \draw[->] (s3.north) -- ++(0,0.5);
+    \draw[<-] (s3.south) -- ++(0,-0.5);
+    \draw[<-] (s3.east) -- ++(0.5,0);
+
+    \draw[<-] (i1.west) -- ++(-0.5,0);
+    \draw[->] (i1.east) -- ++(0.5,0);
+
+    \draw[<-] (i2.east) -- ++(0.5,0);
+    \draw[->] (i2.west) -- ++(-0.5,0);
+
+    \draw[<-] (i3.west) -- ++(-0.5,0);
+    \draw[->] (i3.east) -- ++(0.5,0);
+\end{tikzpicture}
+\end{document}
