@@ -1,0 +1,130 @@
+\makeatletter
+
+% ===== SUM BLOCK =====
+\pgfdeclareshape{sum}{
+    \savedmacro\sumbparameters{
+        \pgfmathsetlength\pgf@x{\pgfkeysvalueof{/pgf/minimum width}}
+        \pgfmathsetlength\pgf@y{\pgfkeysvalueof{/pgf/minimum height}}
+        \pgfmathsetlengthmacro\radius{max(\pgf@x,\pgf@y)/2}
+        \addtosavedmacro\radius
+    }
+    
+    \anchor{center}{\pgfpointorigin}
+    \anchor{north}{\sumbparameters \pgfpointpolar{90}{\radius}}
+    \anchor{south}{\sumbparameters \pgfpointpolar{270}{\radius}}
+    \anchor{east}{\sumbparameters \pgfpointpolar{0}{\radius}}
+    \anchor{west}{\sumbparameters \pgfpointpolar{180}{\radius}}
+    \anchor{north east}{\sumbparameters \pgfpointpolar{45}{\radius}}
+    \anchor{south east}{\sumbparameters \pgfpointpolar{315}{\radius}}
+    \anchor{north west}{\sumbparameters \pgfpointpolar{135}{\radius}}
+    \anchor{south west}{\sumbparameters \pgfpointpolar{225}{\radius}}
+    
+    \backgroundpath{
+        \sumbparameters
+        \pgfpathcircle{\pgfpointorigin}{\radius}
+        \pgfusepath{stroke}
+    }
+}
+
+\def\sum@shift#1{%
+    \ifnum\pdfstrcmp{#1}{north}=0 0:6pt\else
+    \ifnum\pdfstrcmp{#1}{east}=0 270:6pt\else
+    \ifnum\pdfstrcmp{#1}{south}=0 180:6pt\else
+    \ifnum\pdfstrcmp{#1}{west}=0 90:6pt\else
+    \ifnum\pdfstrcmp{#1}{north east}=0 0:6pt\else
+    \ifnum\pdfstrcmp{#1}{south east}=0 270:6pt\else
+    \ifnum\pdfstrcmp{#1}{south west}=0 180:6pt\else
+    \ifnum\pdfstrcmp{#1}{north west}=0 90:6pt\else 0:0pt\fi\fi\fi\fi\fi\fi\fi\fi
+}
+
+\tikzset{
+    sum signs/.style args={#1}{
+        @sum signs/.list={#1}
+    },
+    @sum signs/.style args={#1=#2}{
+        label={[every sum sign, shift={(\sum@shift{#1})}]#1:{$#2$}},
+    },
+    every sum sign/.style={
+        inner sep=1pt,
+        label distance=0pt,
+    }
+}
+
+
+% ===== INTEGRATOR =====
+\newif\ifintegrator@reversed
+\pgfkeys{
+    /pgf/integrator reversed/.is if=integrator@reversed,
+    /pgf/integrator reversed/.default=true
+}
+
+\pgfdeclareshape{integrator}{
+    \savedmacro\integratorparameters{
+        \pgfmathsetlength\pgf@x{\pgfkeysvalueof{/pgf/minimum width}}
+        \pgfmathsetlength\pgf@y{\pgfkeysvalueof{/pgf/minimum height}}
+        \pgfmathsetlengthmacro\halfwidth{0.5*\pgf@x}
+        \pgfmathsetlengthmacro\halfheight{0.5*\pgf@y}
+        \pgfmathsetlengthmacro\borderwidth{\pgfkeysvalueof{/pgf/outer xsep}}
+        \addtosavedmacro\halfwidth
+        \addtosavedmacro\halfheight
+        \addtosavedmacro\borderwidth
+    }
+    
+    \anchor{center}{\integratorparameters \pgfpointorigin}
+    \anchor{west}{\integratorparameters \pgfpoint{-\halfwidth-\borderwidth}{0pt}}
+    \anchor{east}{\integratorparameters \pgfpoint{\halfwidth+\borderwidth}{0pt}}
+    \anchor{north}{\integratorparameters \pgfpoint{0pt}{\halfheight+\borderwidth}}
+    \anchor{south}{\integratorparameters \pgfpoint{0pt}{-\halfheight-\borderwidth}}
+    
+    \backgroundpath{
+        \integratorparameters
+        \pgfmathsetlengthmacro\quarterwidth{0.25*\pgfkeysvalueof{/pgf/minimum width}}
+        
+        \ifintegrator@reversed
+            \pgfpathmoveto{\pgfpoint{\halfwidth}{\halfheight}}
+            \pgfpathlineto{\pgfpoint{\halfwidth - \quarterwidth}{\halfheight}}
+            \pgfpathlineto{\pgfpoint{-\halfwidth}{0pt}}
+            \pgfpathlineto{\pgfpoint{\halfwidth - \quarterwidth}{-\halfheight}}
+            \pgfpathlineto{\pgfpoint{\halfwidth}{-\halfheight}}
+            \pgfpathclose
+            \pgfpathmoveto{\pgfpoint{\halfwidth - \quarterwidth}{\halfheight}}
+            \pgfpathlineto{\pgfpoint{\halfwidth - \quarterwidth}{-\halfheight}}
+        \else
+            \pgfpathmoveto{\pgfpoint{-\halfwidth}{\halfheight}}
+            \pgfpathlineto{\pgfpoint{-\halfwidth + \quarterwidth}{\halfheight}}
+            \pgfpathlineto{\pgfpoint{\halfwidth}{0pt}}
+            \pgfpathlineto{\pgfpoint{-\halfwidth + \quarterwidth}{-\halfheight}}
+            \pgfpathlineto{\pgfpoint{-\halfwidth}{-\halfheight}}
+            \pgfpathclose
+            \pgfpathmoveto{\pgfpoint{-\halfwidth + \quarterwidth}{\halfheight}}
+            \pgfpathlineto{\pgfpoint{-\halfwidth + \quarterwidth}{-\halfheight}}
+        \fi
+        \pgfusepath{stroke}
+    }
+}
+
+
+% ===== MULTIPLIER =====
+\pgfdeclareshape{mult}{
+    \nodeparts{text}
+
+    \savedanchor\centerpoint{
+        \pgf@x=.5\wd\pgfnodeparttextbox
+        \pgf@y=.5\ht\pgfnodeparttextbox
+        \advance\pgf@y by-.5\dp\pgfnodeparttextbox
+    }
+    \anchor{center}{\centerpoint}
+
+    \anchor{north}{\pgfpoint{0pt}{.5\ht\pgfnodeparttextbox}}
+    \anchor{south}{\pgfpoint{0pt}{-.5\ht\pgfnodeparttextbox}}
+    \anchor{west}{\pgfpoint{-.5\wd\pgfnodeparttextbox}{0pt}}
+    \anchor{east}{\pgfpoint{.5\wd\pgfnodeparttextbox}{0pt}}
+
+    \backgroundpath{
+        \pgfpathrectanglecorners
+            {\pgfpoint{-.5\wd\pgfnodeparttextbox}{-.5\ht\pgfnodeparttextbox}}
+            {\pgfpoint{.5\wd\pgfnodeparttextbox}{.5\ht\pgfnodeparttextbox}}
+        \pgfusepath{stroke}
+    }
+}
+\makeatother
